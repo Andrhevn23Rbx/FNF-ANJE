@@ -20,8 +20,9 @@ jobs:
 
       - name: Install Haxelib
         run: |
+          mkdir C:\haxelib
           haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
+          haxelib install hxcpp > NUL
           .\"setup/windows.bat"
         shell: cmd
 
