@@ -20,15 +20,15 @@ jobs:
         with:
           haxe-version: 4.3.4
 
-      - name: Set up Haxelib Directory
+      - name: Create haxelib directory and setup
         run: |
-          mkdir C:\haxelib
-          haxelib setup C:\haxelib
+          mkdir "%USERPROFILE%\haxelib"
+          haxelib setup "%USERPROFILE%\haxelib"
         shell: cmd
 
       - name: Install Haxelibs and Run Setup
         run: |
-          haxelib install hxcpp > nul
+          haxelib install hxcpp
           call setup\windows.bat
         shell: cmd
 
