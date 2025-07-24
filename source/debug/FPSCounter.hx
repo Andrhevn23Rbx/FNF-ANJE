@@ -4,7 +4,6 @@ import flixel.FlxG;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.system.System;
-import sys.vm.Memory;
 import haxe.Timer;
 
 class FPSCounter extends TextField
@@ -55,15 +54,13 @@ class FPSCounter extends TextField
 	}
 
 	public dynamic function updateText():Void {
-		// Memory values
-		var mem:Float = Memory.getBytes() / 1024 / 1024; // GC memory
-		var ram:Float = System.totalMemory / 1024 / 1024; // Total OS memory used
+		// We use System.totalMemory as a proxy for both mem/ram here
+		var ram:Float = System.totalMemory / 1024 / 1024;
+		var mem:Float = ram; // Just mirroring since we can't access GC memory
 
-		// Peak tracking
 		if (mem > peakMem) peakMem = mem;
 		if (ram > peakRam) peakRam = ram;
 
-		// Format as 3-digit rounded strings
 		var memStr = StringTools.lpad(Std.string(Math.round(mem)), "0", 3);
 		var ramStr = StringTools.lpad(Std.string(Math.round(ram)), "0", 3);
 		var memPeak = StringTools.lpad(Std.string(Math.round(peakMem)), "0", 3);
@@ -76,7 +73,6 @@ class FPSCounter extends TextField
 			+ '\nRAM-P: ${ramPeak}mb'
 			+ '\nANJE 0.0.1';
 
-		// Optional FPS color
 		textColor = 0xFFFFFFFF;
 		if (currentFPS < FlxG.drawFramerate * 0.5)
 			textColor = 0xFFFF0000;
