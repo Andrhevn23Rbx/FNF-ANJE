@@ -1,16 +1,10 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build (Windows Only)
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main and experimental branches
   push:
     branches: [ main, experimental ]
   pull_request:
     branches: [ main, experimental ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -18,31 +12,37 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4.1.7
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
 
-      - uses: krdlab/setup-haxe@master
+      - name: Set up Haxe
+        uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.3.4
 
-      - name: Install Haxelib
+      - name: Set up Haxelib Directory
         run: |
-          haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          .\"setup/windows.bat"
+          mkdir C:\haxelib
+          haxelib setup C:\haxelib
         shell: cmd
 
-      - name: Skip SScript setup mode
-        run: echo 'oy9:showMacroty8:loopCosti25y10:includeAllfg' >> %USERPROFILE%/settings.cocoa
+      - name: Install Haxelibs and Run Setup
+        run: |
+          haxelib install hxcpp > nul
+          call setup\windows.bat
+        shell: cmd
+
+      - name: Skip SScript Setup Mode
+        run: echo oy9:showMacroty8:loopCosti25y10:includeAllfg >> %USERPROFILE%\settings.cocoa
         shell: cmd
 
       - name: Create Version Tag
-        run: echo "${{github.run_id}}" > VERSION
+        run: echo ${{ github.run_id }} > VERSION
 
-      - name: Compile
-        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}" -D officialBuild
+      - name: Compile Windows Build
+        run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id }}" -D officialBuild
 
-      - name: Publish Artifact
+      - name: Upload Windows Build Artifact
         uses: actions/upload-artifact@v4.3.4
         with:
           name: windowsBuild
