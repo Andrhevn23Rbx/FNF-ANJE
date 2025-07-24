@@ -33,7 +33,7 @@ class OptimizationSubState extends BaseOptionsMenu
             'charsAndBG',
             'bool',
             true,
-            null));
+            null)); // options must be null for bools
 
         addOption(new Option('Enable GC',
             "If checked, the game will garbage collect (may reduce RAM).",
@@ -118,7 +118,7 @@ class OptimizationSubState extends BaseOptionsMenu
             'sortNotes',
             'string',
             'After Note Finalized',
-            SORT_PATTERN));
+            SORT_PATTERN)); // dropdown uses array here
 
         addOption(new Option('Faster Sort',
             "Sorts only visible objects for performance.",
