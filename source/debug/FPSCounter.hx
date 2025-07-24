@@ -4,24 +4,19 @@ import flixel.FlxG;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.system.System;
+import sys.vm.Memory;
+import haxe.Timer;
 
-/**
-	The FPS class provides an easy-to-use monitor to display
-	the current frame rate of an OpenFL project
-**/
 class FPSCounter extends TextField
 {
-	/**
-		The current frame rate, expressed using frames-per-second
-	**/
 	public var currentFPS(default, null):Int;
 
-	/**
-		The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
-	**/
 	public var memoryMegas(get, never):Float;
 
 	@:noCompletion private var times:Array<Float>;
+
+	private var peakMem:Float = 0;
+	private var peakRam:Float = 0;
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
@@ -43,16 +38,14 @@ class FPSCounter extends TextField
 
 	var deltaTimeout:Float = 0.0;
 
-	// Event Handlers
 	private override function __enterFrame(deltaTime:Float):Void
 	{
-		// prevents the overlay from updating every frame, why would you need to anyways
 		if (deltaTimeout > 1000) {
 			deltaTimeout = 0.0;
 			return;
 		}
 
-		final now:Float = haxe.Timer.stamp() * 1000;
+		final now:Float = Timer.stamp() * 1000;
 		times.push(now);
 		while (times[0] < now - 1000) times.shift();
 
@@ -61,10 +54,29 @@ class FPSCounter extends TextField
 		deltaTimeout += deltaTime;
 	}
 
-	public dynamic function updateText():Void { // so people can override it in hscript
-		text = 'FPS: ${currentFPS}'
-		+ '\nMemory: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}';
+	public dynamic function updateText():Void {
+		// Memory values
+		var mem:Float = Memory.getBytes() / 1024 / 1024; // GC memory
+		var ram:Float = System.totalMemory / 1024 / 1024; // Total OS memory used
 
+		// Peak tracking
+		if (mem > peakMem) peakMem = mem;
+		if (ram > peakRam) peakRam = ram;
+
+		// Format as 3-digit rounded strings
+		var memStr = StringTools.lpad(Std.string(Math.round(mem)), "0", 3);
+		var ramStr = StringTools.lpad(Std.string(Math.round(ram)), "0", 3);
+		var memPeak = StringTools.lpad(Std.string(Math.round(peakMem)), "0", 3);
+		var ramPeak = StringTools.lpad(Std.string(Math.round(peakRam)), "0", 3);
+
+		text = 'FPS: ${currentFPS}'
+			+ '\nMemory: ${memStr}mb'
+			+ '\nRam: ${ramStr}mb'
+			+ '\nMEM-P: ${memPeak}mb'
+			+ '\nRAM-P: ${ramPeak}mb'
+			+ '\nANJE 0.0.1';
+
+		// Optional FPS color
 		textColor = 0xFFFFFFFF;
 		if (currentFPS < FlxG.drawFramerate * 0.5)
 			textColor = 0xFFFF0000;
