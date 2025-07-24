@@ -29,7 +29,7 @@ jobs:
       - name: Install Haxelibs and Run Setup
         run: |
           haxelib install hxcpp
-          call setup\windows.bat
+          if exist setup\windows.bat call setup\windows.bat
         shell: cmd
 
       - name: Skip SScript Setup Mode
