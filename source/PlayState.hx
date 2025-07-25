@@ -4367,7 +4367,7 @@ class PlayState extends MusicBeatState
 			pixelShitPart1 = 'pixelUI/';
 			pixelShitPart2 = '-pixel';
 		}
-
+		if(!cpuControlled) {
 		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating.image + pixelShitPart2));
 		rating.cameras = [camHUD];
 		rating.screenCenter();
@@ -4487,6 +4487,7 @@ class PlayState extends MusicBeatState
 			startDelay: Conductor.crochet * 0.002 / playbackRate
 		});
 	}
+}
 
 	public var strumsBlocked:Array<Bool> = [];
 
@@ -4914,8 +4915,8 @@ class PlayState extends MusicBeatState
 		if (!note.isSustainNote)
 		{
 			combo += 1;
-			if (combo > 9999)
-				combo = 9999;
+			if (combo > 999999999)
+				combo = 999999999;
 			popUpScore(note);
 			health += note.hitHealth * healthGain;
 			invalidateNote(note);
