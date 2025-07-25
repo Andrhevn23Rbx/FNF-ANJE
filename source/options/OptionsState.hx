@@ -3,7 +3,6 @@ package options;
 #if hxdiscord_rpc
 import Discord.DiscordClient;
 #end
-
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -13,6 +12,8 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
+import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.util.FlxSave;
 import haxe.Json;
 import flixel.tweens.FlxEase;
@@ -26,16 +27,7 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = [
-		'Note Colors',
-		'Controls',
-		'Adjust Delay and Combo',
-		'Graphics',
-		'Visuals and UI',
-		'Gameplay',
-		'Optimization' // ✅ Added this
-	];
-
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -54,8 +46,6 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
-			case 'Optimization': // ✅ New case
-				openSubState(new options.OptimizationSubState());
 		}
 	}
 
@@ -70,6 +60,7 @@ class OptionsState extends MusicBeatState
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
 		bg.updateHitbox();
+
 		bg.screenCenter();
 		bg.antialiasing = ClientPrefs.data.globalAntialiasing;
 		add(bg);
@@ -77,7 +68,8 @@ class OptionsState extends MusicBeatState
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		for (i in 0...options.length) {
+		for (i in 0...options.length)
+		{
 			var optionText:Alphabet = new Alphabet(0, 0, options[i], true);
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
@@ -86,7 +78,6 @@ class OptionsState extends MusicBeatState
 
 		selectorLeft = new Alphabet(0, 0, '>', true);
 		add(selectorLeft);
-
 		selectorRight = new Alphabet(0, 0, '<', true);
 		add(selectorRight);
 
@@ -120,7 +111,7 @@ class OptionsState extends MusicBeatState
 			openSelectedSubstate(options[curSelected]);
 		}
 	}
-
+	
 	function changeSelection(change:Int = 0) {
 		curSelected += change;
 		if (curSelected < 0)
