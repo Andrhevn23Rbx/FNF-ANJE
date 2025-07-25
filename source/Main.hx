@@ -49,6 +49,11 @@ class Main extends Sprite
 	{
 		super();
 
+		// ✅ Force 60 FPS Lock (logic and render)
+		FlxG.fixedTimestep = true;
+		FlxG.updateFramerate = 60;
+		FlxG.drawFramerate = 60;
+
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
@@ -74,7 +79,7 @@ class Main extends Sprite
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 		#end
-		
+
 		#if CRASH_HANDLER
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
@@ -107,10 +112,7 @@ class Main extends Sprite
 		}
 
 		errMsg += "\nUncaught Error: " + e.error;
-		/*
-		 * remove if you're modding and want the crash log message to contain the link
-		 * please remember to actually modify the link for the github page to report the issues to.
-		*/
+
 		#if officialBuild
 		errMsg += "\nPlease report this error to the GitHub page: https://github.com/CrowPlexus-FNF/FNF-LegacyPsych\n\n> Crash Handler written by: sqirra-rng";
 		#else
