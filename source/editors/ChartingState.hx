@@ -2388,8 +2388,6 @@ class ChartingState extends MusicBeatState
 		wavData[1][1] = [];
 
 import Reflect;
-import openfl.utils.ByteArray;
-import openfl.media.Sound;
 
 var steps:Int = Math.round(getSectionBeats() * 4);
 var st:Float = sectionStartTime();
@@ -2397,30 +2395,40 @@ var et:Float = st + (Conductor.stepCrochet * steps);
 
 if (FlxG.save.data.chart_waveformInst) {
     var sound:FlxSound = FlxG.sound.music;
-    var innerSound:Dynamic = Reflect.field(sound, "_sound");
+    var innerSound = Reflect.field(sound, "_sound");
+    if (innerSound != null && innerSound.__buffer != null) {
+        var bytes:Bytes = innerSound.__buffer.data.toBytes();
 
-    if (innerSound != null && Reflect.hasField(innerSound, "__buffer")) {
-        var buffer = Reflect.field(innerSound, "__buffer");
-
-        if (buffer != null && Reflect.hasField(buffer, "data")) {
-            var data:Dynamic = Reflect.field(buffer, "data");
-
-            if (data != null && Reflect.hasField(data, "toBytes")) {
-                var bytes:Bytes = Reflect.callMethod(data, Reflect.field(data, "toBytes"), []);
-
-                wavData = waveformData(
-                    buffer,
-                    bytes,
-                    st,
-                    et,
-                    1,
-                    wavData,
-                    Std.int(gridBG.height)
-                );
-            }
-        }
+        wavData = waveformData(
+            innerSound.__buffer,
+            bytes,
+            st,
+            et,
+            1,
+            wavData,
+            Std.int(gridBG.height)
+        );
     }
 }
+
+if (FlxG.save.data.chart_waveformVoices) {
+    var sound:FlxSound = vocals;
+    var innerSound = Reflect.field(sound, "_sound");
+    if (innerSound != null && innerSound.__buffer != null) {
+        var bytes:Bytes = innerSound.__buffer.data.toBytes();
+
+        wavData = waveformData(
+            innerSound.__buffer,
+            bytes,
+            st,
+            et,
+            1,
+            wavData,
+            Std.int(gridBG.height)
+        );
+    }
+} // <-- THIS was the missing closing brace
+
 
 if (FlxG.save.data.chart_waveformVoices) {
     var sound:FlxSound = vocals;
