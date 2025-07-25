@@ -2426,8 +2426,8 @@ if (FlxG.save.data.chart_waveformVoices) {
             wavData,
             Std.int(gridBG.height)
         );
-    }
-} // <-- THIS was the missing closing brace
+    }  // <-- Close inner if here
+}  // <-- Close chart_waveformVoices if here — This is most likely your missing brace
 
 
 if (FlxG.save.data.chart_waveformVoices) {
