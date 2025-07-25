@@ -2387,37 +2387,48 @@ class ChartingState extends MusicBeatState
 		wavData[1][0] = [];
 		wavData[1][1] = [];
 
-		var steps:Int = Math.round(getSectionBeats() * 4);
-		var st:Float = sectionStartTime();
-		var et:Float = st + (Conductor.stepCrochet * steps);
+		import Reflect;
 
-		if (FlxG.save.data.chart_waveformInst) {
-			var sound:FlxSound = FlxG.sound.music;
-			if (sound._sound != null && sound._sound.__buffer != null) {
-				var bytes:Bytes = sound._sound.__buffer.data.toBytes();
+var steps:Int = Math.round(getSectionBeats() * 4);
+var st:Float = sectionStartTime();
+var et:Float = st + (Conductor.stepCrochet * steps);
 
-				wavData = waveformData(
-					sound._sound.__buffer,
-					bytes,
-					st,
-					et,
-					1,
-					wavData,
-					Std.int(gridBG.height)
-				);
-			}
-		}
+if (FlxG.save.data.chart_waveformInst) {
+    var sound:FlxSound = FlxG.sound.music;
+    var innerSound = Reflect.field(sound, "_sound");
+    if (innerSound != null && innerSound.__buffer != null) {
+        var bytes:Bytes = innerSound.__buffer.data.toBytes();
 
-		if (FlxG.save.data.chart_waveformVoices) {
-			var sound:FlxSound = vocals;
-			if (sound._sound != null && sound._sound.__buffer != null) {
-				var bytes:Bytes = sound._sound.__buffer.data.toBytes();
+        wavData = waveformData(
+            innerSound.__buffer,
+            bytes,
+            st,
+            et,
+            1,
+            wavData,
+            Std.int(gridBG.height)
+        );
+    }
+}
 
-				wavData = waveformData(
-					sound._sound.__buffer,
-					bytes,
-					st,
-					et,
+if (FlxG.save.data.chart_waveformVoices) {
+    var sound:FlxSound = vocals;
+    var innerSound = Reflect.field(sound, "_sound");
+    if (innerSound != null && innerSound.__buffer != null) {
+        var bytes:Bytes = innerSound.__buffer.data.toBytes();
+
+        wavData = waveformData(
+            innerSound.__buffer,
+            bytes,
+            st,
+            et,
+            1,
+            wavData,
+            Std.int(gridBG.height)
+        );
+    }
+}
+
 					1,
 					wavData,
 					Std.int(gridBG.height)
